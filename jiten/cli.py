@@ -496,7 +496,7 @@ def android_link_dbs():
 @click.option("-v", "--verbose", is_flag = True, help = "Be verbose.")
 @click.option("-c", "--colour/--no-colour", is_flag = True,
               default = None, help = "Use terminal colours.")
-@click.option("-p", "--pager", default = "less -FR",
+@click.option("-p", "--pager", default = None,
               show_default = True,
               help = "Set $PAGER (unless empty).")
 @click.version_option(
@@ -506,7 +506,10 @@ def android_link_dbs():
 @click.pass_context
 def cli(ctx, colour, pager, **kw):
   if colour is not None: ctx.color = colour
-  if pager: os.environ["PAGER"] = pager
+  if pager:
+    os.environ["PAGER"] = pager
+  elif not os.getenv("PAGER") or os.getenv("PAGER") == "less":
+    os.environ["PAGER"] = "less -FR"
   ctx.obj = dict(kw)
 
 @cli.command(help = """
