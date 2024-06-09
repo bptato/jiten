@@ -508,8 +508,9 @@ def cli(ctx, colour, pager, **kw):
   if colour is not None: ctx.color = colour
   if pager:
     os.environ["PAGER"] = pager
-  elif not os.getenv("PAGER") or os.getenv("PAGER") == "less":
-    os.environ["PAGER"] = "less -FR"
+  elif pager is None: # do not set pager with -p ''
+    if not os.getenv("PAGER") or os.getenv("PAGER") == "less":
+      os.environ["PAGER"] = "less -FR"
   ctx.obj = dict(kw)
 
 @cli.command(help = """
